@@ -59,22 +59,33 @@ function populateLocationSelect() {
     const select = document.getElementById('locationSelect');
     
     // Проверка, что функция getAvailableLocations доступна
-    if (typeof getAvailableLocations !== 'function') {
-        console.error('getAvailableLocations is not defined!');
+    if (typeof LOCATIONS === 'undefined') {
+        console.error('LOCATIONS is not defined!');
         select.innerHTML = '<option value="none">Ошибка загрузки локаций</option>';
         return;
     }
     
-    const availableLocations = getAvailableLocations(player.level);
+    // Показываем ВСЕ локации, но недоступные помечаем
+    const allLocations = LOCATIONS;
     
     // Очищаем список
     select.innerHTML = '<option value="none">Выберите локацию</option>';
     
     // Добавляем локации
-    availableLocations.forEach(location => {
+    allLocations.forEach(location => {
         const option = document.createElement('option');
         option.value = location.id;
-        option.textContent = `${location.name} (Ур. ${location.levelRange[0]}-${location.levelRange[1]})`;
+        
+        // Проверяем, доступна ли локация
+        const isAvailable = player.level >= location.levelRange[0];
+        
+        if (isAvailable) {
+            option.textContent = `${location.name} (Ур. ${location.levelRange[0]}-${location.levelRange[1]})`;
+        } else {
+            option.textContent = `🔒 ${location.name} (Ур. ${location.levelRange[0]}-${location.levelRange[1]}) - Требуется ${location.levelRange[0]} ур.`;
+            option.disabled = true;
+            option.style.color = '#808080';
+        }
         
         if (player.currentLocation === location.id) {
             option.selected = true;
@@ -83,7 +94,7 @@ function populateLocationSelect() {
         select.appendChild(option);
     });
     
-    console.log(`Loaded ${availableLocations.length} locations for level ${player.level}`);
+    console.log(`Loaded ${allLocations.length} locations (player level: ${player.level})`);
 }
 
 function addCombatLog(message, type = 'system') {
@@ -114,6 +125,8 @@ function setupEventListeners() {
             const stat = btn.dataset.stat;
             if (player.addStatPoint(stat)) {
                 updatePlayerStats();
+                // Обновляем список локаций при повышении уровня
+                populateLocationSelect();
                 addCombatLog(`↑ +1 к ${stat}`, 'system');
             }
         });
@@ -124,6 +137,13 @@ function setupEventListeners() {
         const locationId = document.getElementById('locationSelect').value;
         if (locationId === 'none') {
             addCombatLog('❌ Выберите локацию!', 'system');
+            return;
+        }
+        
+        // Проверяем, доступна ли локация
+        const location = getLocationById(locationId);
+        if (location && player.level < location.levelRange[0]) {
+            addCombatLog(`❌ Эта локация требует ${location.levelRange[0]} уровень!`, 'system');
             return;
         }
         
