@@ -20,12 +20,7 @@ class Player {
         this.agility = CONFIG.PLAYER_DEFAULTS.agility;
         this.vitality = CONFIG.PLAYER_DEFAULTS.vitality;
         
-        // Расчётные параметры
-        this.updateStats();
-        this.currentHP = this.maxHP;
-        this.currentMana = this.maxMana;
-        
-        // Экипировка (слоты)
+        // Экипировка (слоты) - инициализируем ДО updateStats
         this.equipment = {
             weapon: null,
             armor: null,
@@ -38,6 +33,11 @@ class Player {
         // Боевое состояние
         this.inCombat = false;
         this.currentLocation = null;
+        
+        // Расчётные параметры
+        this.updateStats();
+        this.currentHP = this.maxHP;
+        this.currentMana = this.maxMana;
         
         this.save();
     }
@@ -58,6 +58,9 @@ class Player {
     
     // Применение бонусов от экипировки
     applyEquipmentBonuses() {
+        // Проверяем, что equipment существует
+        if (!this.equipment) return;
+        
         if (this.equipment.weapon) {
             // Оружие добавляет к базовому урону
         }
@@ -77,7 +80,7 @@ class Player {
     calculateDamage() {
         let baseDamage = 5;
         
-        if (this.equipment.weapon) {
+        if (this.equipment && this.equipment.weapon) {
             baseDamage = this.equipment.weapon.damage;
         }
         
