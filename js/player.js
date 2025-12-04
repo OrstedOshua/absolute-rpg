@@ -196,9 +196,26 @@ class Player {
         return false;
     }
     
-    // Добавление предмета в инвентарь
+    // Добавление предмета в инвентарь (с поддержкой стаков)
     addItem(item) {
-        this.inventory.push(item);
+        // Определяем, можно ли стакать этот тип предмета
+        const stackable = item.type === ITEM_TYPE.POTION || item.type === ITEM_TYPE.MATERIAL;
+        
+        if (stackable) {
+            // Ищем существующий стак того же предмета
+            const existingStack = this.inventory.find(stack => stack.id === item.id);
+            
+            if (existingStack) {
+                // Увеличиваем количество в существующем стаке
+                existingStack.quantity = (existingStack.quantity || 1) + 1;
+                this.save();
+                return;
+            }
+        }
+        
+        // Добавляем новый предмет/стак с quantity = 1
+        this.inventory.push({ ...item, quantity: 1 });
+        this.save();
     }
     
     // Удаление предмета из инвентаря
@@ -211,20 +228,30 @@ class Player {
     
     // Экипировка предмета
     equipItem(itemIndex) {
-        const item = this.inventory[itemIndex];
-        if (!item) return false;
+        const itemStack = this.inventory[itemIndex];
+        if (!itemStack) return false;
+        
+        // Берём один предмет из стака
+        const item = { ...itemStack };
+        delete item.quantity; // Убираем quantity для экипированного предмета
         
         const slot = item.type;
         if (!this.equipment.hasOwnProperty(slot)) return false;
         
-        // Снимаем старый предмет
+        // Снимаем старый предмет (добавляем в инвентарь со стаком)
         if (this.equipment[slot]) {
-            this.inventory.push(this.equipment[slot]);
+            this.addItem(this.equipment[slot]);
         }
         
         // Экипируем новый
         this.equipment[slot] = item;
-        this.removeItem(itemIndex);
+        
+        // Уменьшаем количество в стаке
+        itemStack.quantity = (itemStack.quantity || 1) - 1;
+        if (itemStack.quantity <= 0) {
+            this.inventory.splice(itemIndex, 1);
+        }
+        
         this.updateStats();
         this.save();
         return true;
@@ -234,7 +261,7 @@ class Player {
     unequipItem(slot) {
         if (!this.equipment[slot]) return false;
         
-        this.inventory.push(this.equipment[slot]);
+        this.addItem(this.equipment[slot]);
         this.equipment[slot] = null;
         this.updateStats();
         this.save();
@@ -243,25 +270,32 @@ class Player {
     
     // Использование предмета (зелье)
     useItem(itemIndex) {
-        const item = this.inventory[itemIndex];
-        if (!item || item.type !== ITEM_TYPE.POTION) return false;
+        const itemStack = this.inventory[itemIndex];
+        if (!itemStack || itemStack.type !== ITEM_TYPE.POTION) return { success: false, message: '' };
         
         let result = { success: false, message: '' };
         
-        if (item.healAmount) {
-            const healed = this.heal(item.healAmount);
+        if (itemStack.healAmount) {
+            const healed = this.heal(itemStack.healAmount);
             result.success = true;
             result.message = `Восстановлено ${healed} HP`;
         }
         
-        if (item.manaAmount) {
-            const restored = this.restoreMana(item.manaAmount);
+        if (itemStack.manaAmount) {
+            const restored = this.restoreMana(itemStack.manaAmount);
             result.success = true;
             result.message += ` Восстановлено ${restored} маны`;
         }
         
         if (result.success) {
-            this.removeItem(itemIndex);
+            // Уменьшаем количество в стаке
+            itemStack.quantity = (itemStack.quantity || 1) - 1;
+            
+            // Если стак закончился, удаляем его
+            if (itemStack.quantity <= 0) {
+                this.inventory.splice(itemIndex, 1);
+            }
+            
             this.save();
         }
         
@@ -309,6 +343,17 @@ class Player {
         try {
             const saveData = JSON.parse(data);
             Object.assign(this, saveData);
+            
+            // Миграция старых сохранений: добавляем quantity к предметам, у которых его нет
+            if (this.inventory) {
+                this.inventory = this.inventory.map(item => {
+                    if (!item.hasOwnProperty('quantity')) {
+                        return { ...item, quantity: 1 };
+                    }
+                    return item;
+                });
+            }
+            
             this.updateStats();
             return true;
         } catch (e) {
