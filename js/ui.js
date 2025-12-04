@@ -57,10 +57,20 @@ function updateEnemyDisplay() {
 
 function populateLocationSelect() {
     const select = document.getElementById('locationSelect');
+    
+    // Проверка, что функция getAvailableLocations доступна
+    if (typeof getAvailableLocations !== 'function') {
+        console.error('getAvailableLocations is not defined!');
+        select.innerHTML = '<option value="none">Ошибка загрузки локаций</option>';
+        return;
+    }
+    
     const availableLocations = getAvailableLocations(player.level);
     
+    // Очищаем список
     select.innerHTML = '<option value="none">Выберите локацию</option>';
     
+    // Добавляем локации
     availableLocations.forEach(location => {
         const option = document.createElement('option');
         option.value = location.id;
@@ -72,6 +82,8 @@ function populateLocationSelect() {
         
         select.appendChild(option);
     });
+    
+    console.log(`Loaded ${availableLocations.length} locations for level ${player.level}`);
 }
 
 function addCombatLog(message, type = 'system') {
