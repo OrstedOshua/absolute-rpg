@@ -2,6 +2,304 @@
 // Враги, локации и их характеристики
 
 const LOCATIONS = [
+    // НОВЫЕ ЛОКАЦИИ - РАЗНООБРАЗНЫЕ БИОМЫ
+    {
+        id: 'enchanted_forest',
+        name: '🌳 Зачарованный лес',
+        levelRange: [1, 4],
+        description: 'Волшебный лес, населённый магическими существами',
+        enemies: [
+            {
+                id: 'fairy',
+                name: 'Злая фея',
+                level: 1,
+                hp: 25,
+                damage: 4,
+                defense: 1,
+                magicResist: 5,
+                damageType: DAMAGE_TYPE.MAGICAL,
+                exp: 12,
+                gold: [3, 7],
+                icon: '🧚'
+            },
+            {
+                id: 'forest_sprite',
+                name: 'Лесной спрайт',
+                level: 2,
+                hp: 40,
+                damage: 6,
+                defense: 2,
+                magicResist: 8,
+                damageType: DAMAGE_TYPE.MAGICAL,
+                exp: 18,
+                gold: [5, 10],
+                icon: '✨'
+            },
+            {
+                id: 'treant',
+                name: 'Древень',
+                level: 3,
+                hp: 80,
+                damage: 8,
+                defense: 8,
+                damageType: DAMAGE_TYPE.PHYSICAL,
+                exp: 25,
+                gold: [8, 15],
+                icon: '🌲'
+            },
+            {
+                id: 'wild_boar',
+                name: 'Дикий кабан',
+                level: 4,
+                hp: 90,
+                damage: 12,
+                defense: 6,
+                damageType: DAMAGE_TYPE.PHYSICAL,
+                exp: 30,
+                gold: [10, 18],
+                icon: '🐗'
+            }
+        ]
+    },
+    {
+        id: 'scorching_desert',
+        name: '🏜️ Палящая пустыня',
+        levelRange: [5, 8],
+        description: 'Безжизненная пустыня с опасными хищниками',
+        enemies: [
+            {
+                id: 'sand_scorpion',
+                name: 'Песчаный скорпион',
+                level: 5,
+                hp: 100,
+                damage: 14,
+                defense: 8,
+                damageType: DAMAGE_TYPE.PHYSICAL,
+                exp: 40,
+                gold: [12, 22],
+                icon: '🦂'
+            },
+            {
+                id: 'desert_raider',
+                name: 'Пустынный налётчик',
+                level: 6,
+                hp: 120,
+                damage: 16,
+                defense: 10,
+                damageType: DAMAGE_TYPE.PHYSICAL,
+                exp: 45,
+                gold: [15, 28],
+                icon: '🏹'
+            },
+            {
+                id: 'sand_worm',
+                name: 'Песчаный червь',
+                level: 7,
+                hp: 150,
+                damage: 20,
+                defense: 6,
+                damageType: DAMAGE_TYPE.PHYSICAL,
+                exp: 55,
+                gold: [18, 35],
+                icon: '🪱'
+            },
+            {
+                id: 'fire_djinn',
+                name: 'Огненный джинн',
+                level: 8,
+                hp: 140,
+                damage: 25,
+                defense: 8,
+                magicResist: 15,
+                damageType: DAMAGE_TYPE.MAGICAL,
+                exp: 60,
+                gold: [20, 40],
+                icon: '🧞'
+            }
+        ]
+    },
+    {
+        id: 'frozen_tundra',
+        name: '❄️ Ледяная тундра',
+        levelRange: [9, 12],
+        description: 'Замёрзшие земли с морозными чудовищами',
+        enemies: [
+            {
+                id: 'frost_wolf',
+                name: 'Морозный волк',
+                level: 9,
+                hp: 160,
+                damage: 22,
+                defense: 12,
+                magicResist: 10,
+                damageType: DAMAGE_TYPE.PHYSICAL,
+                exp: 70,
+                gold: [25, 45],
+                icon: '🐺'
+            },
+            {
+                id: 'ice_troll',
+                name: 'Ледяной тролль',
+                level: 10,
+                hp: 220,
+                damage: 28,
+                defense: 18,
+                magicResist: 8,
+                damageType: DAMAGE_TYPE.PHYSICAL,
+                exp: 80,
+                gold: [30, 55],
+                icon: '🧊'
+            },
+            {
+                id: 'snow_yeti',
+                name: 'Снежный йети',
+                level: 11,
+                hp: 250,
+                damage: 32,
+                defense: 20,
+                magicResist: 12,
+                damageType: DAMAGE_TYPE.PHYSICAL,
+                exp: 90,
+                gold: [35, 65],
+                icon: '👹'
+            },
+            {
+                id: 'ice_elemental',
+                name: 'Ледяной элементаль',
+                level: 12,
+                hp: 200,
+                damage: 38,
+                defense: 12,
+                magicResist: 25,
+                damageType: DAMAGE_TYPE.MAGICAL,
+                exp: 95,
+                gold: [40, 70],
+                icon: '💎'
+            }
+        ]
+    },
+    {
+        id: 'mystic_volcano',
+        name: '🌋 Мистический вулкан',
+        levelRange: [13, 16],
+        description: 'Активный вулкан, кишащий огненными существами',
+        enemies: [
+            {
+                id: 'lava_lizard',
+                name: 'Лавовая ящерица',
+                level: 13,
+                hp: 240,
+                damage: 35,
+                defense: 15,
+                magicResist: 18,
+                damageType: DAMAGE_TYPE.PHYSICAL,
+                exp: 105,
+                gold: [45, 85],
+                icon: '🦎'
+            },
+            {
+                id: 'magma_golem',
+                name: 'Магмовый голем',
+                level: 14,
+                hp: 300,
+                damage: 40,
+                defense: 25,
+                magicResist: 15,
+                damageType: DAMAGE_TYPE.PHYSICAL,
+                exp: 115,
+                gold: [50, 95],
+                icon: '🗿'
+            },
+            {
+                id: 'flame_drake',
+                name: 'Огненный дракончик',
+                level: 15,
+                hp: 280,
+                damage: 48,
+                defense: 18,
+                magicResist: 22,
+                damageType: DAMAGE_TYPE.MAGICAL,
+                exp: 125,
+                gold: [55, 105],
+                icon: '🐉'
+            },
+            {
+                id: 'inferno_demon',
+                name: 'Демон инферно',
+                level: 16,
+                hp: 320,
+                damage: 52,
+                defense: 20,
+                magicResist: 28,
+                damageType: DAMAGE_TYPE.MAGICAL,
+                exp: 140,
+                gold: [65, 120],
+                icon: '😈'
+            }
+        ]
+    },
+    {
+        id: 'crystal_caverns',
+        name: '💎 Кристальные пещеры',
+        levelRange: [17, 20],
+        description: 'Сверкающие пещеры с драгоценными кристаллами и их стражами',
+        enemies: [
+            {
+                id: 'crystal_spider',
+                name: 'Кристальный паук',
+                level: 17,
+                hp: 300,
+                damage: 45,
+                defense: 22,
+                magicResist: 20,
+                damageType: DAMAGE_TYPE.PHYSICAL,
+                exp: 150,
+                gold: [70, 130],
+                icon: '🕷️'
+            },
+            {
+                id: 'gem_guardian',
+                name: 'Страж самоцветов',
+                level: 18,
+                hp: 350,
+                damage: 55,
+                defense: 30,
+                magicResist: 25,
+                damageType: DAMAGE_TYPE.PHYSICAL,
+                exp: 160,
+                gold: [80, 150],
+                icon: '💠'
+            },
+            {
+                id: 'crystal_dragon',
+                name: 'Кристальный дракон',
+                level: 19,
+                hp: 450,
+                damage: 70,
+                defense: 35,
+                magicResist: 35,
+                damageType: DAMAGE_TYPE.MAGICAL,
+                exp: 180,
+                gold: [100, 180],
+                icon: '🐲'
+            },
+            {
+                id: 'prismatic_titan',
+                name: 'Призматический титан',
+                level: 20,
+                hp: 550,
+                damage: 85,
+                defense: 40,
+                magicResist: 40,
+                damageType: DAMAGE_TYPE.MAGICAL,
+                exp: 220,
+                gold: [120, 220],
+                icon: '⚡'
+            }
+        ]
+    },
+    
+    // ОРИГИНАЛЬНЫЕ ЛОКАЦИИ
     {
         id: 'dark_forest',
         name: '🌲 Тёмный лес',
