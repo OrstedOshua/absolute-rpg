@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absolute RPG</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- Header -->
+        <header class="game-header">
+            <h1>⚔️ Absolute RPG</h1>
+            <div class="header-controls">
+                <button id="saveBtn" class="btn btn-secondary">💾 Сохранить</button>
+                <button id="resetBtn" class="btn btn-danger">🔄 Сброс</button>
+            </div>
+        </header>
+
+        <!-- Main Game Area -->
+        <div class="game-main">
+            <!-- Left Panel: Character -->
+            <aside class="panel panel-character">
+                <h2>👤 Персонаж</h2>
+                <div class="character-info">
+                    <div class="character-name">
+                        <input type="text" id="playerName" placeholder="Введите имя" maxlength="20">
+                    </div>
+                    <div class="character-level">
+                        <span class="label">Уровень:</span>
+                        <span id="playerLevel" class="value">1</span>
+                    </div>
+                    <div class="character-exp">
+                        <span class="label">Опыт:</span>
+                        <div class="progress-bar">
+                            <div id="expBar" class="progress-fill" style="width: 0%"></div>
+                        </div>
+                        <span id="expText" class="exp-text">0 / 100</span>
+                    </div>
+                </div>
+
+                <!-- Stats -->
+                <div class="stats-section">
+                    <h3>📊 Характеристики</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-label">❤️ HP:</span>
+                            <span id="playerHP" class="stat-value">100/100</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">💧 Мана:</span>
+                            <span id="playerMana" class="stat-value">50/50</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">⚔️ Сила:</span>
+                            <span id="playerStrength" class="stat-value">10</span>
+                            <button class="stat-btn" data-stat="strength">+</button>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">🧠 Интеллект:</span>
+                            <span id="playerIntelligence" class="stat-value">10</span>
+                            <button class="stat-btn" data-stat="intelligence">+</button>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">🏃 Ловкость:</span>
+                            <span id="playerAgility" class="stat-value">10</span>
+                            <button class="stat-btn" data-stat="agility">+</button>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">🛡️ Выносливость:</span>
+                            <span id="playerVitality" class="stat-value">10</span>
+                            <button class="stat-btn" data-stat="vitality">+</button>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">🔰 Защита:</span>
+                            <span id="playerDefense" class="stat-value">5</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">✨ Сопр. магии:</span>
+                            <span id="playerMagicResist" class="stat-value">5</span>
+                        </div>
+                    </div>
+                    <div class="stat-points">
+                        <span>Свободные очки: <span id="statPoints" class="highlight">0</span></span>
+                    </div>
+                </div>
+
+                <!-- Equipment -->
+                <div class="equipment-section">
+                    <h3>🎒 Экипировка</h3>
+                    <div class="equipment-slots">
+                        <div class="equip-slot" data-slot="weapon">
+                            <span class="slot-label">⚔️ Оружие:</span>
+                            <span id="weaponSlot" class="slot-item">Нет</span>
+                        </div>
+                        <div class="equip-slot" data-slot="armor">
+                            <span class="slot-label">🛡️ Броня:</span>
+                            <span id="armorSlot" class="slot-item">Нет</span>
+                        </div>
+                        <div class="equip-slot" data-slot="accessory">
+                            <span class="slot-label">💍 Аксессуар:</span>
+                            <span id="accessorySlot" class="slot-item">Нет</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Center Panel: Combat -->
+            <main class="panel panel-combat">
+                <h2>⚔️ Бой</h2>
+                
+                <!-- Location Selection -->
+                <div class="location-section">
+                    <h3>🗺️ Локация</h3>
+                    <select id="locationSelect" class="location-select">
+                        <option value="none">Выберите локацию</option>
+                    </select>
+                    <button id="startCombatBtn" class="btn btn-primary">▶️ Начать бой</button>
+                    <button id="stopCombatBtn" class="btn btn-danger" style="display:none;">⏸️ Остановить</button>
+                </div>
+
+                <!-- Current Enemy -->
+                <div class="enemy-section">
+                    <h3>👾 Текущий враг</h3>
+                    <div id="currentEnemy" class="enemy-card">
+                        <p class="no-enemy">Выберите локацию и начните бой</p>
+                    </div>
+                </div>
+
+                <!-- Combat Log -->
+                <div class="combat-log-section">
+                    <h3>📜 Боевой лог</h3>
+                    <div id="combatLog" class="combat-log">
+                        <p class="log-entry system">Добро пожаловать в Absolute RPG!</p>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Right Panel: Inventory & Shop -->
+            <aside class="panel panel-inventory">
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="inventory">🎒 Инвентарь</button>
+                    <button class="tab-btn" data-tab="shop">🏪 Магазин</button>
+                </div>
+
+                <!-- Inventory Tab -->
+                <div id="inventoryTab" class="tab-content active">
+                    <h3>Предметы</h3>
+                    <div class="currency">
+                        <span>💰 Золото: <span id="playerGold" class="highlight">0</span></span>
+                    </div>
+                    <div id="inventoryList" class="item-list">
+                        <p class="empty-text">Инвентарь пуст</p>
+                    </div>
+                </div>
+
+                <!-- Shop Tab -->
+                <div id="shopTab" class="tab-content">
+                    <h3>Магазин</h3>
+                    <div class="currency">
+                        <span>💰 Золото: <span id="shopGold" class="highlight">0</span></span>
+                    </div>
+                    <div id="shopList" class="item-list">
+                        <!-- Shop items will be generated here -->
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/player.js"></script>
+    <script src="js/enemies.js"></script>
+    <script src="js/items.js"></script>
+    <script src="js/combat.js"></script>
+    <script src="js/inventory.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>
