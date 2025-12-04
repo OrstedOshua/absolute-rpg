@@ -10,22 +10,26 @@ function updateInventoryDisplay() {
         return;
     }
     
-    player.inventory.forEach((item, index) => {
+    player.inventory.forEach((itemStack, index) => {
         const itemCard = document.createElement('div');
         itemCard.className = 'item-card';
-        itemCard.style.borderLeft = `3px solid ${item.quality.color}`;
+        itemCard.style.borderLeft = `3px solid ${itemStack.quality.color}`;
         
         const itemInfo = document.createElement('div');
         itemInfo.className = 'item-info';
         
         const itemName = document.createElement('div');
         itemName.className = 'item-name';
-        itemName.style.color = item.quality.color;
-        itemName.textContent = `${item.icon} ${item.name}`;
+        itemName.style.color = itemStack.quality.color;
+        
+        // Показываем количество для стакаемых предметов
+        const quantity = itemStack.quantity || 1;
+        const stackText = quantity > 1 ? ` x${quantity}` : '';
+        itemName.textContent = `${itemStack.icon} ${itemStack.name}${stackText}`;
         
         const itemStats = document.createElement('div');
         itemStats.className = 'item-stats';
-        itemStats.textContent = getItemDescription(item);
+        itemStats.textContent = getItemDescription(itemStack);
         
         itemInfo.appendChild(itemName);
         itemInfo.appendChild(itemStats);
@@ -33,13 +37,13 @@ function updateInventoryDisplay() {
         const itemActions = document.createElement('div');
         itemActions.className = 'item-actions';
         
-        if (item.type === ITEM_TYPE.POTION) {
+        if (itemStack.type === ITEM_TYPE.POTION) {
             const useBtn = document.createElement('button');
             useBtn.className = 'btn btn-success btn-small';
             useBtn.textContent = 'Исп.';
             useBtn.onclick = () => usePotion(index);
             itemActions.appendChild(useBtn);
-        } else if (item.type !== ITEM_TYPE.MATERIAL) {
+        } else if (itemStack.type !== ITEM_TYPE.MATERIAL) {
             const equipBtn = document.createElement('button');
             equipBtn.className = 'btn btn-primary btn-small';
             equipBtn.textContent = 'Надеть';
